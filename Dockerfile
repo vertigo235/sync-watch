@@ -26,7 +26,7 @@ RUN cd /tmp && \
 	mkdir -p /usr/local/share/man/man1 && \
 	cp rclone.1 /usr/local/share/man/man1/ 
 
-RUN mkdir -p /app/syncwatch /volume1 /volume2 /opt
+RUN mkdir -p /app/syncwatch /volume1 /volume2 /opt /config
 
 COPY ./syncwatch /app/syncwatch
 COPY ./start_syncwatch.sh /etc/my_init.d/start_syncwatch.sh
@@ -38,7 +38,7 @@ RUN	apt-get clean && rm -rf \
 			/var/lib/apt/lists/* \
 			/var/tmp/* 			
 			
-VOLUME ["/opt","/volume1","/volume2"]
+VOLUME ["/opt","/volume1","/volume2","/config"]
 WORKDIR /app/syncwatch
 
 ENTRYPOINT ["/sbin/my_init"]

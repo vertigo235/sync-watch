@@ -5,7 +5,7 @@ SERVER_URL = config('SERVER_URL')
 SERVER_TOKEN = config('SERVER_TOKEN')
 SERVER_NAME = config('SERVER_NAME')
 CHECK_INTERVAL = config('CHECK_INTERVAL', 60, cast=int)
-LOGFILE = config('LOGFILE','/opt/syncwatch/status.log')
+LOGFILE = config('LOGFILE','/config/syncwatch/status.log')
 
 KICK_VIDEO_TRANSCODES = config('KICK_VIDEO_TRANSCODES', False, cast=bool)
 KICK_AUDIO_TRANSCODES = config('KICK_AUDIO_TRANSCODES', False, cast=bool)
