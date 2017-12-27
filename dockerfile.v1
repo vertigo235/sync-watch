@@ -1,0 +1,55 @@
+FROM ubuntu
+
+ENV TERM=xterm
+
+
+RUN \
+	apt-get update && \
+	apt-get install -y \
+	apt-utils \
+	python \
+	python-dev \	
+	python-pip \
+	python-dev \
+	build-essential \
+	python-setuptools \	
+	nano \
+	wget \
+	curl \
+	unzip \
+	cron \
+	htop && \
+	apt-get clean 
+
+COPY requirements.txt /tmp/requirements.txt
+
+RUN pip install -r /tmp/requirements.txt
+RUN cd /tmp && \
+	curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip && \
+	unzip rclone-current-linux-amd64.zip && \
+	cd rclone-*-linux-amd64 && \
+	cp rclone /usr/bin/ && \
+	chown root:root /usr/bin/rclone && \
+	chmod 755 /usr/bin/rclone && \
+	mkdir -p /usr/local/share/man/man1 && \
+	cp rclone.1 /usr/local/share/man/man1/ 
+	
+RUN cd /tmp && \
+	wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb && \
+	dpkg -i dumb-init_*.deb
+
+RUN mkdir -p /app/syncwatch /volume1 /volume2 /opt
+
+COPY ./syncwatch /app/syncwatch
+	
+RUN	rm -rf \ 
+			/tmp/* \
+			/var/lib/apt/lists/* \
+			/var/tmp/* 			
+			
+VOLUME ["/opt","/volume1","/volume2"]
+WORKDIR /app/syncwatch
+
+ENTRYPOINT ["/usr/bin/dumb-init","-c"]
+
+CMD ["python","/app/syncwatch/patrol.py"]

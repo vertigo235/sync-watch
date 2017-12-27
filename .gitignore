@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# pydev projects
+.project
+.pydevproject
+
 # C extensions
 *.so
 
@@ -51,8 +55,14 @@ coverage.xml
 # Django stuff:
 *.log
 
+## log files
+status.log
+
 # Sphinx documentation
 docs/_build/
 
 # PyBuilder
 target/
+
+## settings
+settings.ini
