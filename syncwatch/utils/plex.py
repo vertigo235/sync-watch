@@ -86,35 +86,6 @@ class Plex:
             log.exception("Exception retrieving streams from request_url=%r, token=%r: ", request_url, self.token)
             return None
 
-    def kill_stream(self, session_id, reason):
-        request_url = urljoin(self.url, 'status/sessions/terminate')
-        headers = {
-            'X-Plex-Token': self.token,
-            'Accept': 'application/json',
-            'X-Plex-Provides': 'controller',
-            'X-Plex-Platform': platform.uname()[0],
-            'X-Plex-Platform-Version': platform.uname()[2],
-            'X-Plex-Product': 'plex_patrol',
-            'X-Plex-Version': '0.9.5',
-            'X-Plex-Device': platform.platform(),
-            'X-Plex-Client-Identifier': str(hex(getnode()))
-        }
-        payload = {
-            'sessionId': session_id,
-            'reason': reason
-        }
-        try:
-            r = requests.get(request_url, headers=headers, params=payload, verify=False)
-            log.debug("Server responded with status_code=%r, content: %r", r.status_code, r.content)
-            if r.status_code == 200:
-                return True
-            else:
-                return False
-        except:
-            log.exception("Exception killing stream %r: ", session_id)
-            return False
-
-
 # helper classes (parsing responses etc...)
 class PlexStream:
     def __init__(self, stream):

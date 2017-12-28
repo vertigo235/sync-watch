@@ -9,14 +9,6 @@ from utils.plex import Plex
 log = logger.get_root_logger()
 server = None
 
-
-def remote_stream_check(stream):
-    if not stream.ip_address.startswith("192.168.1"):
-        return True
-    else:
-        return False
-
-
 def check_streams():
     log.debug("Retrieving active stream(s) for server: %s", server.name)
     streams = server.get_streams()
