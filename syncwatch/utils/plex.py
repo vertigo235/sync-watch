@@ -1,4 +1,5 @@
 import logging
+import json
 import platform
 from urlparse import urljoin
 from uuid import getnode
@@ -74,6 +75,7 @@ class Plex:
 
                 streams = []
                 for stream in result['MediaContainer']['Video']:
+                    log.debug("Stream: %r", json.dumps(stream))
                     streams.append(PlexStream(stream))
                 return streams
 
@@ -105,8 +107,10 @@ class PlexStream:
 
         if 'Session' in stream:
             self.session_id = stream['Session']['id']
+            self.stream_location = stream['Session']['location']
         else:
             self.session_id = 'Unknown'
+            self.stream_location = 'Unknown'
             
         if 'Player' in stream:
             self.state = stream['Player']['state']
@@ -156,7 +160,7 @@ class PlexStream:
         else:
             stream_type = self.type
 
-        return u"{user} ({ip_address})/({ip}) is playing {media} using {player}. " \
+        return u"{user} ({ip_address})/({ip}) location: {location} is playing {media} using {player}. " \
                "Stream state: {state}, type: {type}. Session key: {session}".format(user=self.user,
                                                                                     media=self.title,
                                                                                     player=self.player,
@@ -164,6 +168,7 @@ class PlexStream:
                                                                                     type=self.type,
                                                                                     ip_address=self.ip_address,
                                                                                     ip=self.ip,
+                                                                                    location=self.stream_location,
                                                                                     session=self.session_id)
 
     def __getattr__(self, item):

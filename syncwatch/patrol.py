@@ -12,6 +12,7 @@ server = None
 def check_streams():
     log.debug("Retrieving active stream(s) for server: %s", server.name)
     streams = server.get_streams()
+    #log.debug(streams)
 
     if streams is None:
         log.error("There was an error while retrieving the active streams...")
@@ -24,7 +25,7 @@ def check_streams():
 
     for stream in streams:
         log.debug("Checking stream: %s", stream)
-        if stream.ip_address.startswith("192.168.1"):
+        if stream.stream_location == "lan":
             log.debug("Local stream... %s" % stream.ip_address)
             continue
         elif stream.state == 'paused':
@@ -42,7 +43,7 @@ def check_proc():
     log.debug("Checking processes...")
     procfound = False
     for proc in psutil.process_iter():
-        if proc.name().find('rclone') >= 0:
+        if proc.name().startswith('rclone'):
             log.debug("%s (%s)- %s is %s",
                       proc.name(),
                       psutil.Process(proc.pid).pid,
@@ -64,7 +65,7 @@ def test_proc():
 def enable_proc():
     log.debug("Enabling processes...")
     for proc in psutil.process_iter():
-        if proc.name().find('rclone') >= 0:
+        if proc.name().startswith('rclone'):
             if psutil.Process(proc.pid).status() == 'stopped':
                 log.info("%s ENABLED", proc)
                 psutil.Process(proc.pid).resume()
@@ -73,7 +74,7 @@ def enable_proc():
 def disable_proc():
     log.debug("Disabling processes...")
     for proc in psutil.process_iter():
-        if proc.name().find('rclone') >= 0:
+        if proc.name().startswith('rclone'):
             if psutil.Process(proc.pid).status() != 'stopped':
                 log.info("%s DISABLED", proc)
                 psutil.Process(proc.pid).suspend()
@@ -95,7 +96,8 @@ if __name__ == "__main__":
     while True:
         log.debug("Checking streams in %s seconds", config.CHECK_INTERVAL)
 
-        # test_proc()
+        test_proc()
+        check_streams()
 
         if check_proc():
             log.debug("Found a process, doing that thing")
