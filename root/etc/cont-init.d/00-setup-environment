@@ -1,0 +1,27 @@
+#!/usr/bin/with-contenv bash
+
+echo "
+-----------------------------------------------
+GIVEN ENVIRONMENT
+-----------------------------------------------
+PUID           | $PUID
+PGID           | $PGID
+UMASK          | $UMASK
+ARGS           | $ARGS
+-----------------------------------------------
+"
+
+source /etc/env
+
+echo "
+RUNNING ENVIRONMENT
+-----------------------------------------------
+PUID           | $PUID
+PGID           | $PGID
+UMASK          | $UMASK
+ARGS           | $ARGS
+-----------------------------------------------
+"
+
+groupmod -o -g "$PGID" abc
+usermod -o -u "$PUID" abc
