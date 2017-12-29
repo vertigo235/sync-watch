@@ -37,7 +37,13 @@ RUN	apt-get clean && rm -rf \
 			/tmp/* \
 			/var/lib/apt/lists/* \
 			/var/tmp/* 			
-			
+
+# create user 
+RUN \ 
+  groupmod -g 100 users && \ 
+  useradd -u 1000 -U -d /config -s /bin/false rclone && \ 
+  usermod -G users abc     
+
 VOLUME ["/opt","/volume1","/volume2","/config"]
 WORKDIR /app/syncwatch
 
