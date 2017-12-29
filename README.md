@@ -18,7 +18,7 @@ docker create \
 
 docker exec -it syncwatch rclone copy -v /volume1/Media "Remote:Media"
 
-## Synwatch script
+## Syncwatch script
 Alternatively you could just run the syncwatch.py script on your machine to monitor rclone sessions there if you don't want to run the docker. 
 
 It's located in the syncwatch folder...
