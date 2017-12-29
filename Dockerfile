@@ -4,6 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV XDG_CONFIG_HOME="/config" XDG_DATA_HOME="/config"
 ENV LANG='C.UTF-8' LANGUAGE='C.UTF-8' LC_ALL='C.UTF-8'
 ENV TERM="xterm"
+ENV DOCKER="YES"
 
 RUN \
 	apt-get update && \
