@@ -3,7 +3,7 @@ A Docker for rclone that suspends transfers when there are remote Plex Streams
 
 ## Usage
 
-'''
+```
 docker create \
 	--name syncwatch \
 	-e SERVER_URL=https://192.168.1.5:32400/ \
@@ -14,7 +14,7 @@ docker create \
 	-v /volume1:/volume1 \ 
 	-v /volume2:/volume2 \
 	vertigo235/syncwatch
-'''
+```
 
 ## Starting a transfer
 
