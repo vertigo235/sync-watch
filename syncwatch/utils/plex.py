@@ -28,7 +28,7 @@ class Plex:
             'X-Plex-Provides': 'controller',
             'X-Plex-Platform': platform.uname()[0],
             'X-Plex-Platform-Version': platform.uname()[2],
-            'X-Plex-Product': 'plex_patrol',
+            'X-Plex-Product': 'sync_watch',
             'X-Plex-Version': '0.9.5',
             'X-Plex-Device': platform.platform(),
             'X-Plex-Client-Identifier': str(hex(getnode()))
@@ -54,7 +54,7 @@ class Plex:
             'X-Plex-Provides': 'controller',
             'X-Plex-Platform': platform.uname()[0],
             'X-Plex-Platform-Version': platform.uname()[2],
-            'X-Plex-Product': 'plex_patrol',
+            'X-Plex-Product': 'sync_watch',
             'X-Plex-Version': '0.9.5',
             'X-Plex-Device': platform.platform(),
             'X-Plex-Client-Identifier': str(hex(getnode()))
@@ -141,10 +141,7 @@ class PlexStream:
         if 'title' not in stream or 'type' not in stream:
             self.title = 'Unknown'
         else:
-            #if stream['type'] == 'episode':
-            #    self.title = u"{} {}x{}".format(stream['grandparentTitle'], stream['parentIndex'], stream['index'])
-            #else:
-                self.title = stream['title']
+            self.title = stream['title']
 
     def __str__(self):
         if self.type == 'transcode':
