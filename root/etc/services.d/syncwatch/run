@@ -2,4 +2,4 @@
 
 source /etc/env
 
-exec s6-setuidgid root python /app/syncwatch/patrol.py
+exec s6-setuidgid root python /app/syncwatch/syncwatch.py
