@@ -1,2 +1,2 @@
 #!/bin/bash
-python /app/syncwatch/syncwatch.py &
+python /app/syncwatch/syncwatch.py
