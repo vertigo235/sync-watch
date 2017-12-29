@@ -12,7 +12,6 @@ server = None
 def check_streams():
     log.debug("Retrieving active stream(s) for server: %s", server.name)
     streams = server.get_streams()
-    #log.debug(streams)
 
     if streams is None:
         log.error("There was an error while retrieving the active streams...")
@@ -55,13 +54,6 @@ def check_proc():
     return procfound
 
 
-def test_proc():
-    for proc in psutil.process_iter():
-        # log.info("%s %s",proc.name().find('rclone'),proc)
-        if proc.name().startswith('rclone'):
-            log.info("Found it! %s" % proc)
-
-
 def enable_proc():
     log.debug("Enabling processes...")
     for proc in psutil.process_iter():
@@ -85,32 +77,29 @@ if __name__ == "__main__":
     log.info("Validating server %r with token %r", config.SERVER_URL,
              config.SERVER_TOKEN)
     server = Plex(config.SERVER_NAME, config.SERVER_URL, config.SERVER_TOKEN)
-    checkwait = 10
+    checkwait = config.CHECK_INTERVAL
     disabled = True
     if not server.validate():
         log.error("Could not validate server token, are you sure its correct...")
         exit(1)
     else:
-        log.info("Server token was validated, proceeding to uphold the law!")
+        log.info("Server token was validated, so far so good.")
 
     while True:
-        log.debug("Checking streams in %s seconds", config.CHECK_INTERVAL)
-
-        test_proc()
-        check_streams()
+        log.debug("Checking streams every %s seconds", checkwait)
 
         if check_proc():
-            log.debug("Found a process, doing that thing")
+            log.debug("Found a process, disabling any active rclone sessions.")
             if check_streams():
                 disable_proc()
-                checkwait = 5
+                checkwait = config.CHECK_INTERVAL
                 disabled = True
                 log.debug("Stream found, waiting for %s", checkwait)
             else:
                 if disabled:
                     enable_proc()
                 disabled = False
-                checkwait = 5
+                checkwait = config.CHECK_INTERVAL
                 log.debug("No remote found, waiting for %s", checkwait)
         else:
             log.debug("No processes found... waiting for %s", checkwait)
