@@ -1,5 +1,10 @@
 FROM phusion/baseimage:0.9.22
 
+ARG DEBIAN_FRONTEND=noninteractive
+ENV XDG_CONFIG_HOME="/config" XDG_DATA_HOME="/config"
+ENV LANG='C.UTF-8' LANGUAGE='C.UTF-8' LC_ALL='C.UTF-8'
+ENV TERM="xterm"
+
 RUN \
 	apt-get update && \
 	apt-get install -y \
@@ -37,7 +42,13 @@ RUN	apt-get clean && rm -rf \
 			/tmp/* \
 			/var/lib/apt/lists/* \
 			/var/tmp/* 			
-			
+
+# create user 
+RUN \ 
+  groupmod -g 100 users && \ 
+  useradd -u 1000 -U -d /config -s /bin/false rclone && \ 
+  usermod -G users rclone     
+
 VOLUME ["/opt","/volume1","/volume2","/config"]
 WORKDIR /app/syncwatch
 
