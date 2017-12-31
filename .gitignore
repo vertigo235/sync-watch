@@ -9,6 +9,7 @@ __pycache__/
 
 # VS Code
 .vscode
+.sync
 
 # C extensions
 *.so
