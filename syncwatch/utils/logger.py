@@ -1,4 +1,5 @@
 import logging
+import config
 import os
 from logging.handlers import RotatingFileHandler
 
@@ -9,7 +10,7 @@ log_formatter = logging.Formatter(
     '%(asctime)s - %(levelname)-10s - %(name)-15s -  %(funcName)-25s- %(message)s')
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))
-file_path = os.path.join(PROJECT_DIR, 'status.log') 
+file_path = config.LOGFILE
 
 rootLogger = logging.getLogger('plex_patrol')
 

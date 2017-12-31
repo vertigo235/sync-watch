@@ -1,26 +1,36 @@
-FROM phusion/baseimage:0.9.22
+FROM ubuntu:17.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV XDG_CONFIG_HOME="/config" XDG_DATA_HOME="/config"
 ENV LANG='C.UTF-8' LANGUAGE='C.UTF-8' LC_ALL='C.UTF-8'
 ENV TERM="xterm"
+ENV DOCKER="YES"
 
 RUN \
 	apt-get update && \
-	apt-get install -y \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends --no-install-suggests \
+    apt-utils \
+	apt-transport-https ca-certificates \
+	build-essential \
 	python \
 	python-dev \	
 	python-pip \
+	python-setuptools \
 	nano \
 	wget \
 	curl \
 	unzip \
 	tzdata \
-	htop 
+	htop && \
+
+	# install s6-overlay
+    curl -s -o - -L "https://github.com/just-containers/s6-overlay/releases/download/v1.20.0.0/s6-overlay-amd64.tar.gz" | tar xzf - -C / 
 
 COPY requirements.txt /tmp/requirements.txt
 
-RUN pip install -r /tmp/requirements.txt
+RUN pip install wheel && \
+	pip install -r /tmp/requirements.txt
 RUN cd /tmp && \
 	curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip && \
 	unzip rclone-current-linux-amd64.zip && \
@@ -33,23 +43,24 @@ RUN cd /tmp && \
 
 RUN mkdir -p /app/syncwatch /volume1 /volume2 /opt /config
 
-COPY ./syncwatch /app/syncwatch
-COPY ./start_syncwatch.sh /etc/my_init.d/start_syncwatch.sh
-
-RUN chmod +x /etc/my_init.d/start_syncwatch.sh
-	
-RUN	apt-get clean && rm -rf \ 
-			/tmp/* \
-			/var/lib/apt/lists/* \
-			/var/tmp/* 			
+RUN	apt-get autoremove -y && \
+	apt-get clean && rm -rf \ 
+	/tmp/* \
+	/var/lib/apt/lists/* \
+	/var/tmp/* 			
 
 # create user 
 RUN \ 
-  groupmod -g 100 users && \ 
-  useradd -u 1000 -U -d /config -s /bin/false rclone && \ 
-  usermod -G users rclone     
+    useradd -u 1000 -U -d /config -s /bin/false abc && \
+    usermod -G users abc
+
+# Copy Syncwatch to App Folder
+COPY ./syncwatch /app/syncwatch
+
+# Copy etc files
+COPY root/ /
 
 VOLUME ["/opt","/volume1","/volume2","/config"]
 WORKDIR /app/syncwatch
 
-ENTRYPOINT ["/sbin/my_init"]
+ENTRYPOINT ["/init"]

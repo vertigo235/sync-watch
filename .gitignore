@@ -11,6 +11,9 @@ __pycache__/
 .vscode
 .sync
 
+# sync
+.sync
+
 # C extensions
 *.so
 
