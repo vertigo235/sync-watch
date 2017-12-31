@@ -11,10 +11,6 @@ RUN \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends --no-install-suggests \
     apt-utils \
-    #software-properties-common \
-	#less \
-	#vim-tiny \
-	#psmisc \
 	apt-transport-https ca-certificates \
 	build-essential \
 	python \
