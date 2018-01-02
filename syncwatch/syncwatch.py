@@ -25,7 +25,7 @@ def check_streams():
     for stream in streams:
         log.debug("Checking stream: %s", stream)
         if stream.stream_location == "lan":
-            log.debug("Local stream... %s" % stream.ip_address)
+            log.debug("Local stream... %s", stream.ip_address)
             continue
         elif stream.state == 'paused':
             log.debug("Paused stream... %s", stream.ip_address)
