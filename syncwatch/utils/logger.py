@@ -1,8 +1,6 @@
 import logging
-import config
 import os
 from logging.handlers import RotatingFileHandler
-
 from utils import config
 
 # Setup logging
