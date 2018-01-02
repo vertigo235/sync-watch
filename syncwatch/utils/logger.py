@@ -12,7 +12,7 @@ log_formatter = logging.Formatter(
 PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))
 file_path = config.LOGFILE
 
-rootLogger = logging.getLogger('plex_patrol')
+rootLogger = logging.getLogger('sync_watch')
 
 # Console logging
 console_handler = logging.StreamHandler()
