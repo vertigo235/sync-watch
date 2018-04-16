@@ -4,6 +4,6 @@ source /etc/env
 
 echo "Installing rclone..."
 
-curl https://rclone.org/install.sh | sudo bash
+curl https://rclone.org/install.sh | bash
 
 echo "rclone install complete..."
