@@ -29,7 +29,8 @@ RUN \
 
 COPY requirements.txt /tmp/requirements.txt
 
-RUN pip install wheel && \
+RUN pip install -U pip && \
+	pip install wheel && \
 	pip install -r /tmp/requirements.txt
 
 RUN mkdir -p /app/syncwatch /volume1 /volume2 /opt /config
