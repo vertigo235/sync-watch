@@ -69,12 +69,12 @@ class Plex:
                 if 'MediaContainer' not in result:
                     log.error("Failed to retrieve streams from server %r", self.name)
                     return None
-                elif 'Video' not in result['MediaContainer']:
+                elif 'Metadata' not in result['MediaContainer']:
                     log.debug("There were no streams to check for server %r", self.name)
                     return []
 
                 streams = []
-                for stream in result['MediaContainer']['Video']:
+                for stream in result['MediaContainer']['Metadata']:
                     log.debug("Stream: %r", json.dumps(stream))
                     streams.append(PlexStream(stream))
                 return streams
