@@ -1,0 +1,47 @@
+stages:
+  - check
+  - build
+  - release
+
+shellcheck:
+  stage: check
+  image: koalaman/shellcheck-alpine
+  script:
+    - for file in $(find ./root -type f); do shellcheck $file; done;
+  allow_failure: true
+  only:
+    - pushes
+    - schedules
+
+docker-build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  script:
+    - docker build --pull --cache-from "$CI_REGISTRY_IMAGE" -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  only:
+    - pushes
+    - schedules
+
+docker-release:
+  stage: release
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PW"
+  script:
+  script:
+    - docker PULL "$CI_REGISTRY_IMAGE" .
+    - docker tag "$CI_REGISTRY_IMAGE" "$DOCKERUB_IMAGE"
+    - docker push "$DOCKERHUB_IMAGE"
+    - docker tag "$DOCKERHUB_IMAGE:${CI_COMMIT_SH:0:8}"
+    - docker push "$DOCKERHUB_IMAGE:${CI_COMMIT_SH:0:8}"
+  only:
+    - web
+    - master
+    - schedules

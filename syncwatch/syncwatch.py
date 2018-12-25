@@ -25,7 +25,7 @@ def check_streams():
     for stream in streams:
         log.debug("Checking stream: %s", stream)
         if stream.stream_location == "lan":
-            log.debug("Local stream... %s" % stream.ip_address)
+            log.debug("Local stream... %s", stream.ip_address)
             continue
         elif stream.state == 'paused':
             log.debug("Paused stream... %s", stream.ip_address)
@@ -89,12 +89,12 @@ if __name__ == "__main__":
         log.debug("Checking streams every %s seconds", checkwait)
 
         if check_proc():
-            log.debug("Found a process, disabling any active rclone sessions.")
+            log.debug("Found a process, checking for active remote streams.")
             if check_streams():
                 disable_proc()
                 checkwait = config.CHECK_INTERVAL
                 disabled = True
-                log.debug("Stream found, waiting for %s", checkwait)
+                log.debug("Remote stream found, waiting for %s", checkwait)
             else:
                 if disabled:
                     enable_proc()

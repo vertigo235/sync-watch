@@ -1,5 +1,6 @@
 #!/usr/bin/with-contenv bash
+# shellcheck shell=bash
 
-source /etc/env
+umask "${UMASK}"
 
 exec s6-setuidgid root python /app/syncwatch/syncwatch.py

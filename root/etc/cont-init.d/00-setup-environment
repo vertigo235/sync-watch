@@ -1,27 +1,15 @@
 #!/usr/bin/with-contenv bash
+# shellcheck shell=bash
 
 echo "
+ENVIRONMENT
 -----------------------------------------------
-GIVEN ENVIRONMENT
------------------------------------------------
-PUID           | $PUID
-PGID           | $PGID
-UMASK          | $UMASK
-ARGS           | $ARGS
+PUID           | ${PUID}
+PGID           | ${PGID}
+UMASK          | ${UMASK}
+ARGS           | ${ARGS}
 -----------------------------------------------
 "
 
-source /etc/env
-
-echo "
-RUNNING ENVIRONMENT
------------------------------------------------
-PUID           | $PUID
-PGID           | $PGID
-UMASK          | $UMASK
-ARGS           | $ARGS
------------------------------------------------
-"
-
-groupmod -o -g "$PGID" abc
-usermod -o -u "$PUID" abc
+groupmod -o -g "${PGID}" abc
+usermod -o -u "${PUID}" abc
