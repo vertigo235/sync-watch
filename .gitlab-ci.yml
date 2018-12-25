@@ -3,12 +3,15 @@ stages:
   - build
   - release
 
+variables:
+  DOCKERHUB_IMAGE: vertigo235/syncwatch
+
 shellcheck:
   stage: check
   image: koalaman/shellcheck-alpine
   script:
     - for file in $(find ./root -type f); do shellcheck $file; done;
-  allow_failure: true
+  #allow_failure: true
   only:
     - pushes
     - schedules
@@ -21,7 +24,7 @@ docker-build:
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   script:
-    - docker build --pull --cache-from "$CI_REGISTRY_IMAGE" -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker build --pull --cache-from "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   only:
     - pushes
@@ -36,11 +39,11 @@ docker-release:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PW"
   script:
   script:
-    - docker PULL "$CI_REGISTRY_IMAGE" .
-    - docker tag "$CI_REGISTRY_IMAGE" "$DOCKERUB_IMAGE"
+    - docker pull "$CI_REGISTRY_IMAGE:master"
+    - docker tag "$CI_REGISTRY_IMAGE:master" "$DOCKERHUB_IMAGE"
     - docker push "$DOCKERHUB_IMAGE"
-    - docker tag "$DOCKERHUB_IMAGE:${CI_COMMIT_SH:0:8}"
-    - docker push "$DOCKERHUB_IMAGE:${CI_COMMIT_SH:0:8}"
+    - docker tag "$DOCKERHUB_IMAGE" "$DOCKERHUB_IMAGE:${CI_COMMIT_SHA:0:8}"
+    - docker push "$DOCKERHUB_IMAGE:${CI_COMMIT_SHA:0:8}"
   only:
     - web
     - master
