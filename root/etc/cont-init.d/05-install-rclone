@@ -1,6 +1,5 @@
 #!/usr/bin/with-contenv bash
-
-source /etc/env
+# shellcheck shell=bash
 
 echo "Installing rclone..."
 

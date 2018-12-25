@@ -1,5 +1,4 @@
 #!/usr/bin/with-contenv bash
-
-source /etc/env
+# shellcheck shell=bash
 
 chown -R abc:abc /config
