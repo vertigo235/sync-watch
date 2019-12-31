@@ -14,11 +14,13 @@ RUN \
     && apt-get install -y --no-install-recommends --no-install-suggests \
     apt-utils \
 	apt-transport-https ca-certificates \
+	python3 \
+	python3-pip \
+	python3-setuptools \	
 	build-essential \
-	python \
+	libssl-dev \
+	libffi-dev \
 	python-dev \	
-	python-pip \
-	python-setuptools \
 	nano \
 	wget \
 	curl \
