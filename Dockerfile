@@ -29,8 +29,8 @@ RUN \
 	htop \
 	# install s6-overlay
     && curl -fsSL "https://github.com/just-containers/s6-overlay/releases/download/v1.21.7.0/s6-overlay-amd64.tar.gz" | tar xzf - -C / \
-	&& pip install wheel \
-	&& pip install -r /tmp/requirements.txt \
+	&& pip3 install wheel \
+	&& pip3 install -r /tmp/requirements.txt \
 	&& apt-get autoremove -y \
 	&& apt-get clean && rm -rf \  
 	/tmp/* \
