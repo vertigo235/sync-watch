@@ -20,7 +20,7 @@ RUN \
 	build-essential \
 	libssl-dev \
 	libffi-dev \
-	python-dev \	
+	python3-dev \	
 	nano \
 	wget \
 	curl \
