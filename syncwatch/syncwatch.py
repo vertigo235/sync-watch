@@ -74,6 +74,7 @@ def disable_proc():
 
 if __name__ == "__main__":
     log.info("Initializing")
+    log.info("Debug: %s", config.DEBUG)
     log.info("Validating server %r with token %r", config.SERVER_URL,
              config.SERVER_TOKEN)
     server = Plex(config.SERVER_NAME, config.SERVER_URL, config.SERVER_TOKEN)
