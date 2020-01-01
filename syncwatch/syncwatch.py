@@ -4,6 +4,7 @@ import psutil
 
 from utils import config
 from utils import logger
+from utils.rclone import rclone
 from utils.plex import Plex
 
 log = logger.get_root_logger()
