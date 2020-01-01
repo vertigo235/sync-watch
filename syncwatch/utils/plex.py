@@ -13,7 +13,7 @@ from utils import logger
 log = logger.get_logger(__name__)
 logging.getLogger("requests").setLevel(logging.WARNING)
 
-class Plex:
+class Plex(object):
     def __init__(self, name, url, token):
         self.name = name
         self.url = url
@@ -88,7 +88,7 @@ class Plex:
             return None
 
 # helper classes (parsing responses etc...)
-class PlexStream:
+class PlexStream(object):
     def __init__(self, stream):
         #log.info(stream['Media']['stream'])
         
@@ -108,6 +108,7 @@ class PlexStream:
             self.session_id = stream['Session']['id']
             self.stream_location = stream['Session']['location']
             self.stream_bandwidth = stream['Session']['bandwidth']
+            self.stream_KBs = self.stream_bandwidth / 7.812
         else:
             self.session_id = 'Unknown'
             self.stream_location = 'Unknown'
@@ -158,11 +159,12 @@ class PlexStream:
             stream_type = self.type
 
         return u"{user} ({ip_address})/({ip}) location: {location} is playing {media} using {player}. " \
-               "Stream state: {state} | bw: {bandwidth}, type: {type}. Session key: {session}".format(user=self.user,
+               "Stream state: {state} | bw: {bandwidth} ({KBs} KB/s), type: {type}. Session key: {session}".format(user=self.user,
                                                                                     media=self.title,
                                                                                     player=self.player,
                                                                                     state=self.state,
                                                                                     bandwidth=self.stream_bandwidth,
+                                                                                    KBs=self.stream_KBs,
                                                                                     type=self.type,
                                                                                     ip_address=self.ip_address,
                                                                                     ip=self.ip,
