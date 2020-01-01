@@ -5,14 +5,13 @@ from urllib.parse import urljoin
 from uuid import getnode
 
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from utils import logger
 
 log = logger.get_logger(__name__)
 logging.getLogger("requests").setLevel(logging.WARNING)
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
 
 class Plex:
     def __init__(self, name, url, token):
@@ -108,6 +107,7 @@ class PlexStream:
         if 'Session' in stream:
             self.session_id = stream['Session']['id']
             self.stream_location = stream['Session']['location']
+            self.stream_bandwidth = stream['Session']['bandwidth']
         else:
             self.session_id = 'Unknown'
             self.stream_location = 'Unknown'
@@ -122,15 +122,15 @@ class PlexStream:
         else:
             self.ip_address = 'Unknown'
             
-        if 'Media' in stream and 'Part' in stream['Media']:
-            self.type = stream['Media']['Part']['decision']
+        if 'Media' in stream and 'Part' in stream['Media'][0]:
+            self.type = stream['Media'][0]['Part'][0]['decision']
         else:
             self.type = 'Unknown'
             
         if self.type == 'transcode':
             if 'TranscodeSession' in stream:
-                self.video_decision = stream['TranscodeSession']['video_decision']
-                self.audio_decision = stream['TranscodeSession']['audio_decision']
+                self.video_decision = stream['TranscodeSession']['videoDecision']
+                self.audio_decision = stream['TranscodeSession']['audioDecision']
             else:
                 self.video_decision = 'Unknown'
                 self.audio_decision = 'Unknown'
@@ -158,10 +158,11 @@ class PlexStream:
             stream_type = self.type
 
         return u"{user} ({ip_address})/({ip}) location: {location} is playing {media} using {player}. " \
-               "Stream state: {state}, type: {type}. Session key: {session}".format(user=self.user,
+               "Stream state: {state} | bw: {bandwidth}, type: {type}. Session key: {session}".format(user=self.user,
                                                                                     media=self.title,
                                                                                     player=self.player,
                                                                                     state=self.state,
+                                                                                    bandwidth=self.stream_bandwidth,
                                                                                     type=self.type,
                                                                                     ip_address=self.ip_address,
                                                                                     ip=self.ip,
