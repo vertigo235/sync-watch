@@ -46,9 +46,9 @@ steps:
     repo: vertigo235/syncwatch
     tags:
       - latest
-      - '3'
-      - '3.0'
-      - '3.0.${DRONE_BUILD_NUMBER}'
+      - '4'
+      - '4.0'
+      - '4.0.${DRONE_BUILD_NUMBER}'
     cache_from: vertigo235/syncwatch
   when:
     branch:
