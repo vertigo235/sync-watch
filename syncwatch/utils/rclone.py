@@ -36,7 +36,7 @@ class rclone(object):
         r = self._session.post(url).json()
         log.debug(r)
         if self.bw_confirmed_limit['rate'] != r['bytesPerSecond']:
-            log.debug("Updating stored limit via get_bw_limit, new limit %s", r['bytesPerSecond'])
+            log.info("Updating stored limit via get_bw_limit, new limit %s", r['bytesPerSecond'])
             self.bw_confirmed_limit['rate'] = r['bytesPerSecond']
             self.bw_confirmed_limit['time'] = dt.now()
     

@@ -10,6 +10,7 @@ from utils.plex import Plex
 
 log = logger.get_root_logger()
 server = None
+rc = None
 
 def check_proc():
     log.debug("Checking processes...")
@@ -51,19 +52,16 @@ if __name__ == "__main__":
     log.info("Validating server %r with token %r", config.SERVER_URL,
              config.SERVER_TOKEN)
     server = Plex(config.SERVER_NAME, config.SERVER_URL, config.SERVER_TOKEN)
+    rc = rclone()
     checkwait = config.CHECK_INTERVAL
-    disabled = True
+
     if not server.validate():
         log.error("Could not validate server token, are you sure its correct...")
         exit(1)
     else:
         log.info("Server token was validated, so far so good.")
 
-    check_proc()
-    rc = rclone()
     server.check_streams()
-
-    #rclone.set_bw(700)
 
     while True:
         log.debug("Checking streams every %s seconds", checkwait)
