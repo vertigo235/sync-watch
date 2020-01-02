@@ -64,10 +64,8 @@ class Plex(object):
             log.debug("Checking stream: %s", stream)
             if stream.stream_location == "lan":
                 log.debug("Local stream... %s", stream.ip_address)
-                #continue
-            #elif stream.state == 'paused':
-            #    log.debug("Paused stream... %s", stream.ip_address)
-                #continue
+            elif stream.state == 'paused':
+                log.debug("Paused stream... %s", stream.ip_address)
             else:
                 log.debug("Remote stream detected! %s", stream.ip_address)
                 bw = bw + stream.stream_KBs
