@@ -20,10 +20,7 @@ class Plex(object):
         self.token = token
         self.remote_bw = 0
         self.remote_stream = False
-
-    def validate(self):
-        request_url = urljoin(self.url, 'status/sessions')
-        headers = {
+        self.headers = {
             'X-Plex-Token': self.token,
             'Accept': 'application/json',
             'X-Plex-Provides': 'controller',
@@ -34,6 +31,10 @@ class Plex(object):
             'X-Plex-Device': platform.platform(),
             'X-Plex-Client-Identifier': str(hex(getnode()))
         }
+
+    def validate(self):
+        request_url = urljoin(self.url, 'status/sessions')
+        headers = self.headers
 
         try:
             r = requests.get(request_url, headers=headers, verify=False)
@@ -79,17 +80,7 @@ class Plex(object):
 
     def get_streams(self):
         request_url = urljoin(self.url, 'status/sessions')
-        headers = {
-            'X-Plex-Token': self.token,
-            'Accept': 'application/json',
-            'X-Plex-Provides': 'controller',
-            'X-Plex-Platform': platform.uname()[0],
-            'X-Plex-Platform-Version': platform.uname()[2],
-            'X-Plex-Product': 'sync_watch',
-            'X-Plex-Version': '0.9.5',
-            'X-Plex-Device': platform.platform(),
-            'X-Plex-Client-Identifier': str(hex(getnode()))
-        }
+        headers = self.headers
 
         try:
             r = requests.get(request_url, headers=headers, verify=False)
