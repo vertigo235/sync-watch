@@ -18,6 +18,8 @@ class Plex(object):
         self.name = name
         self.url = url
         self.token = token
+        self.remote_bw = 0
+        self.remote_stream = False
 
     def validate(self):
         request_url = urljoin(self.url, 'status/sessions')
@@ -36,14 +38,46 @@ class Plex(object):
         try:
             r = requests.get(request_url, headers=headers, verify=False)
             if r.status_code == 200 and r.headers['Content-Type'] == 'application/json':
-                log.debug("Server responded with status_code=%r, content: %r", r.status_code, r.json())
+                #log.debug("Server responded with status_code=%r, content: %r", r.status_code, r.json())
                 return True
             else:
-                log.debug("Server responded with status_code=%r, content: %r", r.status_code, r.content)
+                log.error("Server responded with status_code=%r, content: %r", r.status_code, r.content)
                 return False
         except:
             log.exception("Exception validating server token=%r, url=%r: ", self.token, self.url)
             return False
+
+    def check_streams(self):
+        streams = self.get_streams()
+        remotestream = False
+        bw = 0
+
+        if streams is None:
+            log.error("There was an error while retrieving the active streams...")
+            return
+        elif not streams:
+            log.debug("There's currently no streams to check")
+            return
+        else:
+            log.debug("Checking %d stream(s)", len(streams))
+        for stream in streams:
+            log.debug("Checking stream: %s", stream)
+            if stream.stream_location == "lan":
+                log.debug("Local stream... %s", stream.ip_address)
+                #continue
+            #elif stream.state == 'paused':
+            #    log.debug("Paused stream... %s", stream.ip_address)
+                #continue
+            else:
+                log.debug("Remote stream detected! %s", stream.ip_address)
+                bw = bw + stream.stream_KBs
+                remotestream = True
+
+        self.remote_bw = bw
+        self.remote_stream = remotestream
+        log.debug("Total Remote BW: %s", self.remote_bw)
+        log.debug("Done checking streams...")
+        return remotestream    
 
     def get_streams(self):
         request_url = urljoin(self.url, 'status/sessions')
@@ -63,7 +97,7 @@ class Plex(object):
             r = requests.get(request_url, headers=headers, verify=False)
             if r.status_code == 200 and r.headers['Content-Type'] == 'application/json':
                 result = r.json()
-                log.debug("Server responded with status_code=%r, content: %r", r.status_code, r.content)
+                #log.debug("Server responded with status_code=%r, content: %r", r.status_code, r.content)
 
                 if 'MediaContainer' not in result:
                     log.error("Failed to retrieve streams from server %r", self.name)
@@ -74,7 +108,7 @@ class Plex(object):
 
                 streams = []
                 for stream in result['MediaContainer']['Metadata']:
-                    log.debug("Stream: %r", json.dumps(stream))
+                    #log.debug("Stream: %r", json.dumps(stream))
                     streams.append(PlexStream(stream))
                 return streams
 

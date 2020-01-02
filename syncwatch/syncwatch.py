@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import time
 import psutil
+import sys
 
 from utils import config
 from utils import logger
@@ -9,35 +10,6 @@ from utils.plex import Plex
 
 log = logger.get_root_logger()
 server = None
-
-def check_streams():
-    log.debug("Retrieving active stream(s) for server: %s", server.name)
-    streams = server.get_streams()
-
-    if streams is None:
-        log.error("There was an error while retrieving the active streams...")
-        return
-    elif not streams:
-        log.debug("There's currently no streams to check")
-        return
-    else:
-        log.debug("Checking %d stream(s)", len(streams))
-
-    for stream in streams:
-        log.debug("Checking stream: %s", stream)
-        if stream.stream_location == "lan":
-            log.debug("Local stream... %s", stream.ip_address)
-            continue
-        elif stream.state == 'paused':
-            log.debug("Paused stream... %s", stream.ip_address)
-            continue
-        else:
-            log.debug("Remote stream detected! %s", stream.ip_address)
-            return True
-
-    log.debug("Done checking streams...")
-    return False
-
 
 def check_proc():
     log.debug("Checking processes...")
@@ -87,23 +59,27 @@ if __name__ == "__main__":
     else:
         log.info("Server token was validated, so far so good.")
 
+    check_proc()
+    rclone = rclone()
+
+    server.check_streams()
+
+    #rclone.set_bw(700)
+
     while True:
         log.debug("Checking streams every %s seconds", checkwait)
 
         if check_proc():
-            log.debug("Found a process, checking for active remote streams.")
-            if check_streams():
-                disable_proc()
-                checkwait = config.CHECK_INTERVAL
-                disabled = True
-                log.debug("Remote stream found, waiting for %s", checkwait)
+            server.check_streams()
+            if server.remote_bw > 0:
+                setbw = int(config.BW_MAX - (server.remote_bw * config.BW_FACTOR))
+                log.info("Current remote BW: %s, setting rclone BW to %s", server.remote_bw , setbw)
+                rclone.set_bw(setbw)
             else:
-                if disabled:
-                    enable_proc()
-                disabled = False
-                checkwait = config.CHECK_INTERVAL
-                log.debug("No remote found, waiting for %s", checkwait)
+                setbw = int(config.BW_MAX)
+                log.info("Current remote BW: %s, setting rclone BW to %s", server.remote_bw , setbw)
+                rclone.set_bw(config.BW_MAX)
         else:
-            log.debug("No processes found... waiting for %s", checkwait)
+            rclone = rclone()
 
         time.sleep(checkwait)
