@@ -60,8 +60,7 @@ if __name__ == "__main__":
         log.info("Server token was validated, so far so good.")
 
     check_proc()
-    rclone = rclone()
-
+    rc = rclone()
     server.check_streams()
 
     #rclone.set_bw(700)
@@ -74,12 +73,13 @@ if __name__ == "__main__":
             if server.remote_bw > 0:
                 setbw = int(config.BW_MAX - (server.remote_bw * config.BW_FACTOR))
                 log.info("Current remote BW: %s, setting rclone BW to %s", server.remote_bw , setbw)
-                rclone.set_bw(setbw)
+                rc.set_bw(setbw)
             else:
                 setbw = int(config.BW_MAX)
                 log.info("Current remote BW: %s, setting rclone BW to %s", server.remote_bw , setbw)
-                rclone.set_bw(config.BW_MAX)
+                rc.set_bw(config.BW_MAX)
         else:
-            rclone = rclone()
+            rc = rclone()
+            log.debug("No processes found... waiting for %s", checkwait)
 
         time.sleep(checkwait)
