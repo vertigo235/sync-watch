@@ -64,6 +64,7 @@ coverage.xml
 
 ## log files
 status.log*
+status.log.*
 
 # Sphinx documentation
 docs/_build/
