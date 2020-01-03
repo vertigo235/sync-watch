@@ -3,6 +3,6 @@
 
 echo "Installing rclone..."
 
-curl https://rclone.org/install.sh | bash
+#curl https://rclone.org/install.sh | bash
 
 echo "rclone install complete..."

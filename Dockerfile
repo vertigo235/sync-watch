@@ -27,10 +27,20 @@ RUN \
 	unzip \
 	tzdata \
 	htop \
+	git \
+	golang-go \
 	# install s6-overlay
     && curl -fsSL "https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-amd64.tar.gz" | tar xzf - -C / \
 	&& pip3 install wheel \
 	&& pip3 install -r /tmp/requirements.txt \
+	&& cd /tmp/ \
+	&& git clone https://github.com/rclone/rclone.git \
+	&& cd rclone \
+	&& git checkout fix-1205-order-by \
+	&& go build \
+	&& ./rclone version \
+	&& cp ./rclone /usr/sbin/ \
+	&& cd / \
 	&& apt-get autoremove -y \
 	&& apt-get clean && rm -rf \  
 	/tmp/* \
