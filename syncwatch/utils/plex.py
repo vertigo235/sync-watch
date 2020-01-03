@@ -146,7 +146,7 @@ class PlexStream(object):
         else:
             self.ip_address = 'Unknown'
             
-        if 'Media' in stream and 'Part' in stream['Media'][0]:
+        if 'Media' in stream and 'Part' in stream['Media'][0] and 'decision' in stream['Media'][0]['Part'][0]:
             self.type = stream['Media'][0]['Part'][0]['decision']
         else:
             self.type = 'Unknown'
