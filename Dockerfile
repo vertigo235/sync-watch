@@ -44,6 +44,7 @@ RUN \
 	&& ./rclone version \
 	&& cp ./rclone /usr/sbin/ \
 	&& cd / \
+	&& apt-get remove -y software-properties-common \
 	&& apt-get autoremove -y \
 	&& apt-get clean && rm -rf \  
 	/tmp/* \
