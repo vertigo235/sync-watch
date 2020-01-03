@@ -11,6 +11,9 @@ COPY requirements.txt /tmp/requirements.txt
 RUN \
 	apt-get update \
     && apt-get upgrade -y \
+	&& apt-get install -y software-properties-common \
+	&& add-apt-repository -y ppa:longsleep/golang-backports \
+	&& apt-get update \
     && apt-get install -y --no-install-recommends --no-install-suggests \
     apt-utils \
 	apt-transport-https ca-certificates \
