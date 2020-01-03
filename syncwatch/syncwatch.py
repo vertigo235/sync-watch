@@ -75,7 +75,7 @@ if __name__ == "__main__":
             else:
                 setbw = int(config.BW_MAX)
                 log.info("Current remote BW: %s, setting rclone BW to %s", server.remote_bw , setbw)
-                rc.set_bw(config.BW_MAX)
+                rc.set_bw(setbw)
         else:
             rc = rclone()
             log.debug("No processes found... waiting for %s", checkwait)
