@@ -58,19 +58,19 @@ class Plex(object):
             return
         elif not streams:
             log.debug("There's currently no streams to check")
-            return
+            bw = 0
         else:
             log.debug("Checking %d stream(s)", len(streams))
-        for stream in streams:
-            log.debug("Checking stream: %s", stream)
-            if stream.stream_location == "lan":
-                log.debug("Local stream... %s", stream.ip_address)
-            elif stream.state == 'paused':
-                log.debug("Paused stream... %s", stream.ip_address)
-            else:
-                log.debug("Remote stream detected! %s", stream.ip_address)
-                bw = bw + stream.stream_KBs
-                remotestream = True
+            for stream in streams:
+                log.debug("Checking stream: %s", stream)
+                if stream.stream_location == "lan":
+                    log.debug("Local stream... %s", stream.ip_address)
+                elif stream.state == 'paused':
+                    log.debug("Paused stream... %s", stream.ip_address)
+                else:
+                    log.debug("Remote stream detected! %s", stream.ip_address)
+                    bw = bw + stream.stream_KBs
+                    remotestream = True
 
         self.remote_bw = bw
         self.remote_stream = remotestream
